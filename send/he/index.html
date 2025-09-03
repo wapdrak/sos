@@ -46,11 +46,11 @@
             grid-template-columns: 1fr 1fr; 
             gap: 10px; 
         }
-        .button-grid-3 { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr 1fr; 
-            gap: 10px; 
-            margin-top: 10px; 
+        .button-grid-full-width {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 10px;
         }
         button { 
             padding: 12px; 
@@ -77,35 +77,36 @@
 <body>
 
     <div class="container">
-        <h3>שליחה מהירה</h3>
+        <h3>🆘 מצב חירום</h3>
         <div class="form-group">
             <input type="tel" id="custom_number" placeholder="הזן מספר טלפון">
         </div>
         <div class="form-group">
             <textarea id="custom_message" placeholder="הזן הודעה..."></textarea>
         </div>
-        <!-- Mřížka se třemi tlačítky -->
-        <div class="button-grid-3">
-            <button class="btn-success" onclick="addLocation()">הוסף את מיקומך להודעה</button>
-            <button class="btn-primary" onclick="sendCustomSms()">שלח SMS</button>
-            <button class="btn-primary" onclick="callCustom()">התקשר</button>
-            <!-- Tlačítko pro přidání GPS -->
+        <div class="button-grid">
+             <!-- Tlačítko pro přidání GPS, přesně jak jsi chtěl -->
+            <button class="btn-success" onclick="addLocation()">📍 הוסף את מיקומך להודעה</button><br>
+            <button class="btn-primary" onclick="sendCustomSms()">💬 שלח SMS</button>
+            <button class="btn-primary" onclick="callCustom()">📞 התקשר</button>
+        </div>
+        <div class="button-grid-full-width">
         </div>
 
         <hr>
 
         <h3>לחצני חירום</h3>
         <div class="button-grid">
-            <button class="btn-emergency" onclick="callHelp('101')">מד"א (101)</button>
-            <button class="btn-emergency" onclick="callHelp('100')">משטרה (100)</button>
-            <button class="btn-emergency" onclick="callHelp('102')">כיבוי אש (102)</button>
+            <button class="btn-emergency" onclick="callHelp('101')">🚑 מד"א (101)</button>
+            <button class="btn-emergency" onclick="callHelp('100')">🚨 משטרה (100)</button>
+            <button class="btn-emergency" onclick="callHelp('102')">🚒 כיבוי אש (102)</button>
             <button class="btn-info" onclick="callHelp('104')">פיקוד העורף (104)</button>
             <button class="btn-secondary" onclick="callHelp('1201')">מוקד ער"ן (1201)</button>
         </div>
     </div>
 
     <script>
-        // Funkce pro přidání GPS polohy do textu zprávy
+        // Funkce pro PŘIDÁNÍ GPS polohy do textu zprávy
         function addLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
