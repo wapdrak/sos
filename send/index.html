@@ -58,37 +58,37 @@
                     function(position) {
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
-                        const locationUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+                        const locationUrl = `http://maps.google.com/maps?q=${lat},${lon}`;
                         const messageTextarea = document.getElementById('custom_message');
                         
                         // Přidá nový řádek, pokud už je v textu nějaký obsah
                         if (messageTextarea.value.length > 0) {
                             messageTextarea.value += '\n\n';
                         }
-                        messageTextarea.value += `Moje poloha: ${locationUrl}`;
+                        messageTextarea.value += `המיקום שלי: ${locationUrl}`;
                     },
                     function(error) {
                         // Zobrazení chybové hlášky, pokud se polohu nepodaří získat
-                        let errorMessage = 'Nelze získat polohu: ';
+                        let errorMessage = 'לא ניתן לקבל מיקום: ';
                         switch(error.code) {
                             case error.PERMISSION_DENIED:
-                                errorMessage += "Povolení zamítnuto.";
+                                errorMessage += "ההרשאה נדחתה.";
                                 break;
                             case error.POSITION_UNAVAILABLE:
-                                errorMessage += "Informace o poloze nejsou dostupné.";
+                                errorMessage += "מידע המיקום אינו זמין.";
                                 break;
                             case error.TIMEOUT:
-                                errorMessage += "Vypršel čas pro získání polohy.";
+                                errorMessage += "פג הזמן לקבלת המיקום.";
                                 break;
                             default:
-                                errorMessage += "Neznámá chyba.";
+                                errorMessage += "שגיאה לא ידועה.";
                                 break;
                         }
                         alert(errorMessage);
                     }
                 );
             } else {
-                alert("Geolokace není v tomto prohlížeči podporována.");
+                alert("מיקום גיאוגרפי אינו נתמך בדפדפן זה.");
             }
         }
 
