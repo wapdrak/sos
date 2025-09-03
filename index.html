@@ -1,1 +1,116 @@
-0
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לוח תקשורת מהיר</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #1c1c1e; color: #ffffff; margin: 0; padding: 15px; box-sizing: border-box; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        h3 { color: #aeaeb2; text-align: center; border-bottom: 1px solid #545458; padding-bottom: 10px; }
+        input, textarea { width: 100%; padding: 12px; box-sizing: border-box; background-color: #3a3a3c; color: #ffffff; border: 1px solid #545458; border-radius: 8px; font-size: 16px; }
+        textarea { resize: vertical; min-height: 80px; }
+        .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { padding: 12px; font-size: 14px; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; } /* Zmenšené buttony */
+        .btn-primary { background-color: #0a84ff; }
+        .btn-location { background-color: #30d158; margin-top: 5px; } /* Nový styl pro geolokační tlačítko */
+        .btn-emergency { background-color: #ff3b30; }
+        .btn-info { background-color: #5e5ce6; }
+        .btn-secondary { background-color: #636366; }
+        button:active { opacity: 0.7; }
+        hr { border: none; border-top: 1px solid #545458; margin: 25px 0; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h3>שליחה מהירה</h3>
+        <div class="form-group">
+            <input type="tel" id="custom_number" placeholder="הזן מספר טלפון">
+        </div>
+        <div class="form-group">
+            <textarea id="custom_message" placeholder="הזן הודעה..."></textarea>
+            <button class="btn-location" onclick="addLocation()">+ 📍 הוסף מיקום</button>
+        </div>
+        <div class="button-grid">
+            <button class="btn-primary" onclick="callCustom()">התקשר</button>
+            <button class="btn-primary" onclick="sendCustomSms()">שלח SMS</button>
+        </div>
+
+        <hr>
+
+        <h3>לחצני חירום</h3>
+        <div class="button-grid">
+            <button class="btn-emergency" onclick="callHelp('101')">מד"א (101)</button>
+            <button class="btn-emergency" onclick="callHelp('100')">משטרה (100)</button>
+            <button class="btn-emergency" onclick="callHelp('102')">כיבוי אש (102)</button>
+            <button class="btn-info" onclick="callHelp('104')">פיקוד העורף (104)</button>
+            <button class="btn-secondary" onclick="callHelp('1201')">מוקד ער"ן (1201)</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Nová funkce pro geolokaci ---
+        function addLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        const locationUrl = `http://maps.google.com/maps?q=${lat},${lon}`;
+                        const messageTextarea = document.getElementById('custom_message');
+                        
+                        // Přidá nový řádek, pokud už je v textu nějaký obsah
+                        if (messageTextarea.value.length > 0) {
+                            messageTextarea.value += '\n\n';
+                        }
+                        messageTextarea.value += `המיקום שלי: ${locationUrl}`;
+                    },
+                    function(error) {
+                        // Zobrazení chybové hlášky, pokud se polohu nepodaří získat
+                        let errorMessage = 'לא ניתן לקבל מיקום: ';
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage += "ההרשאה נדחתה.";
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage += "מידע המיקום אינו זמין.";
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage += "פג הזמן לקבלת המיקום.";
+                                break;
+                            default:
+                                errorMessage += "שגיאה לא ידועה.";
+                                break;
+                        }
+                        alert(errorMessage);
+                    }
+                );
+            } else {
+                alert("מיקום גיאוגרפי אינו נתמך בדפדפן זה.");
+            }
+        }
+
+        // --- Původní funkce (opravené) ---
+        function callCustom() {
+            const number = document.getElementById('custom_number').value;
+            if (number) { document.location = `tel://${number}`; }
+        }
+
+        function sendCustomSms() {
+            const number = document.getElementById('custom_number').value;
+            const message = document.getElementById('custom_message').value;
+            if (number) {
+                const url = `sms://${number}?body=${encodeURIComponent(message)}`;
+                document.location = url;
+            }
+        }
+        
+        function callHelp(number) {
+            document.location = `tel://${number}`;
+        }
+    </script>
+
+</body>
+</html>
