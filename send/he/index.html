@@ -77,20 +77,20 @@
 <body>
 
     <div class="container">
-        <h3>🆘 מצב חירום</h3>
+        <h3>מצב חירום</h3>
         <div class="form-group">
             <input type="tel" id="custom_number" placeholder="הזן מספר טלפון">
         </div>
         <div class="form-group">
             <textarea id="custom_message" placeholder="הזן הודעה..."></textarea>
         </div>
+        <div class="button-grid-full-width">
+             <!-- Tlačítko pro přidání GPS z parametrů -->
+            <button class="btn-success" onclick="addLocationFromParams()">📍 הוסף את מיקומך להודעה</button>
+        </div>
         <div class="button-grid">
-             <!-- Tlačítko pro přidání GPS, přesně jak jsi chtěl -->
-            <button class="btn-success" onclick="addLocation()">📍 הוסף את מיקומך להודעה</button><br>
             <button class="btn-primary" onclick="sendCustomSms()">💬 שלח SMS</button>
             <button class="btn-primary" onclick="callCustom()">📞 התקשר</button>
-        </div>
-        <div class="button-grid-full-width">
         </div>
 
         <hr>
@@ -106,36 +106,23 @@
     </div>
 
     <script>
-        // Funkce pro PŘIDÁNÍ GPS polohy do textu zprávy
-        function addLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-                        const locationUrl = `http://maps.google.com/maps?q=${lat},${lon}`;
-                        const messageTextarea = document.getElementById('custom_message');
-                        
-                        // Přidá nový řádek, pokud už je v textu nějaký obsah
-                        if (messageTextarea.value.length > 0) {
-                            messageTextarea.value += '\n\n';
-                        }
-                        messageTextarea.value += `המיקום שלי: ${locationUrl}`;
-                    },
-                    function(error) {
-                        // Zobrazení chybové hlášky, pokud se polohu nepodaří získat
-                        let errorMessage = 'לא ניתן לקבל מיקום: ';
-                        switch(error.code) {
-                            case error.PERMISSION_DENIED: errorMessage += "ההרשאה נדחתה."; break;
-                            case error.POSITION_UNAVAILABLE: errorMessage += "מידע המיקום אינו זמין."; break;
-                            case error.TIMEOUT: errorMessage += "פג הזמן לקבלת המיקום."; break;
-                            default: errorMessage += "שגיאה לא ידועה."; break;
-                        }
-                        alert(errorMessage);
-                    }
-                );
+        // Funkce pro PŘIDÁNÍ GPS polohy z URL parametrů do textu zprávy
+        function addLocationFromParams() {
+            const params = new URLSearchParams(window.location.search);
+            const gpsLocation = params.get('poloha'); // Hledáme parametr s klíčem 'poloha'
+
+            if (gpsLocation) {
+                // Pokud jsme dostali GPS, vytvoříme odkaz a vložíme ho do textového pole
+                const locationUrl = `http://maps.google.com/maps?q=${gpsLocation}`;
+                const messageTextarea = document.getElementById('custom_message');
+                
+                // Přidá nový řádek, pokud už je v textu nějaký obsah
+                if (messageTextarea.value.length > 0) {
+                    messageTextarea.value += '\n\n';
+                }
+                messageTextarea.value += `המיקום שלי: ${locationUrl}`;
             } else {
-                alert("מיקום גיאוגרפי אינו נתמך בדפדפן זה.");
+                alert('מיקום לא התקבל מהמאקרו. ודא שהמאקרו שולח פרמטר "poloha".');
             }
         }
 
@@ -161,3 +148,4 @@
     </script>
 </body>
 </html>
+
