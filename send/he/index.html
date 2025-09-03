@@ -12,10 +12,8 @@
         input, textarea { width: 100%; padding: 12px; box-sizing: border-box; background-color: #3a3a3c; color: #ffffff; border: 1px solid #545458; border-radius: 8px; font-size: 16px; }
         textarea { resize: vertical; min-height: 80px; }
         .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .button-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
         button { padding: 12px; font-size: 14px; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; }
         .btn-primary { background-color: #0a84ff; }
-        .btn-success { background-color: #30d158; }
         .btn-emergency { background-color: #ff3b30; }
         .btn-info { background-color: #5e5ce6; }
         .btn-secondary { background-color: #636366; }
@@ -24,6 +22,7 @@
     </style>
 </head>
 <body>
+
     <div class="container">
         <h3>שליחה מהירה</h3>
         <div class="form-group">
@@ -32,8 +31,7 @@
         <div class="form-group">
             <textarea id="custom_message" placeholder="הזן הודעה..."></textarea>
         </div>
-            <button class="btn-success" onclick="addLocation()">+ 📍 הוסף מיקום</button>
-        <div class="button-grid-3">
+        <div class="button-grid">
             <button class="btn-primary" onclick="callCustom()">התקשר</button>
             <button class="btn-primary" onclick="sendCustomSms()">שלח SMS</button>
         </div>
@@ -51,33 +49,26 @@
     </div>
 
     <script>
-        function addLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-                        const locationUrl = `http://googleusercontent.com/maps/google.com/4{lat},${lon}`;
-                        const messageTextarea = document.getElementById('custom_message');
-                        if (messageTextarea.value.length > 0) { messageTextarea.value += '\n\n'; }
-                        messageTextarea.value += `המיקום שלי: ${locationUrl}`;
-                    },
-                    function(error) {
-                        let errorMessage = 'לא ניתן לקבל מיקום: ';
-                        switch(error.code) {
-                            case error.PERMISSION_DENIED: errorMessage += "ההרשאה נדחתה."; break;
-                            case error.POSITION_UNAVAILABLE: errorMessage += "מידע המיקום אינו זמין."; break;
-                            case error.TIMEOUT: errorMessage += "פג הזמן לקבלת המיקום."; break;
-                            default: errorMessage += "שגיאה לא ידועה."; break;
-                        }
-                        alert(errorMessage);
-                    }
-                );
-            } else {
-                alert("מיקום גיאוגרפי אינו נתמך בדפדפן זה.");
-            }
-        }
+        // --- OPRAVENÁ A FUNKČNÍ ČÁST ---
+        // Spustí se automaticky, když se stránka načte
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const gpsLocation = params.get('poloha'); // Hledáme parametr s klíčem 'poloha'
 
+            if (gpsLocation) {
+                // Pokud jsme dostali GPS, vytvoříme platný odkaz na Google Mapy
+                const locationUrl = `http://maps.google.com/maps?q=${gpsLocation}`;
+                const messageTextarea = document.getElementById('custom_message');
+                
+                // Přidá nový řádek, pokud už je v textu nějaký obsah
+                if (messageTextarea.value.length > 0) {
+                    messageTextarea.value += '\n\n';
+                }
+                messageTextarea.value += `המיקום שלי: ${locationUrl}`;
+            }
+        };
+
+        // --- Zbytek funkcí zůstává stejný ---
         function callCustom() {
             const number = document.getElementById('custom_number').value;
             if (number) { document.location = `tel://${number}`; }
